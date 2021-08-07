@@ -93,8 +93,7 @@ class AuthController extends BaseApiController
     
         $response['response']['status'] = true;
         $response['response']['responseCode'] = 200;
-        $response['response']['responseDescription'] = "Loged Outut Successfully.";
-        $response['reset_token'] = $token;
+        $response['response']['responseDescription'] = "Logged Outut Successfully.";
 
         return $this->respond($response);
     }

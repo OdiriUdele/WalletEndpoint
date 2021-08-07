@@ -70,11 +70,9 @@ class WalletController extends BaseApiController
                 return $this->respond($response);
 
             }catch(\Exception $e){
-                \Log::info($e);
                 DB::rollback();
                 return $this->respondWithError('Something Went Wrong.');
             }catch(\Error $e){
-                \Log::info($e);
                 DB::rollback();
                 return $this->respondWithError('Something Went Wrong.');
             }

@@ -53,10 +53,8 @@ class Service{
                 return $transaction;
 
             }catch(\Exception $e){
-                \Log::info($e);
                 return false;
             }catch(\Error $e){
-                \Log::info($e);
                 return false;
             }
     }
@@ -83,7 +81,6 @@ class Service{
                 return $transaction;
 
             }catch(\Exception $e){
-                \Log::info($e);
                 return false;
             }catch(\Error $e){
                 return false;
