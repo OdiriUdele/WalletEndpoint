@@ -1,61 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## Wallet Endpoint and state/LGA import.
 
-## About Laravel
+This is a laravel application that takes  input from different endpoints to enable the user carry out multiple actions from registration to login and down to state/LGA import.  Tools Used:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel Framework => ^7.29
+- Laravel tymon/jwt-auth=> "^1.0. (For Authentication)
+- Php => 7.4.15)
+- maatwebsite/excel: ^3.1 (For Excel Import).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+I made use of Requests,Resource, models, migrations, controller and services.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+##Scope
+- A User can sign up
+- A user can perform authentication operations like resetting passwords and logging out.
+- A user can create a wallet, update a wallet, view wallet information and delete a wallet.
+- Scope also covers the following endpoints:
+  An endpoint that;
+- Gets all users in the system.
+- Gets a user’s detail including the wallets they own and the transaction history of that user.
+- Gets all wallets in the system.
+- Gets a wallet’s detail including its owner, type and the transaction history of that wallet.
+- Gets the count of users, count of wallets, total wallet balance, total volume of transactions.
+- Sends money from one wallet to another.
+- Trigger an import of the data in the excel file into the database
+- Returns state information in format below:
+ ```json
+    {
+    "response": {
+        "status": "success",
+        "responseCode": 200,
+        "responseDescription": "States and LGAs"
+    },
+    "state": [
+        {
+            "FCT": [
+                "Abaji",
+                "Abuja Municipal",
+                "Bwari",
+                "Gwagwalada",
+                "Kuje",
+                "Kwali"
+            ]
+        },
+        {
+            "Aba": [
+                "Aba North",
+                "Aba South",
+                "Umuahia North",
+                "Umuahia South"
+            ]
+        },
+        {
+            "Akwa Ibom": [
+                "Eket",
+                "Uyo",
+                "Calabar Municipality"
+            ]
+        }
+    ]
+}
+```
 
-## Learning Laravel
+## Some key endpoints
+- api/v1/general/wallet-types [//fetch wallet types]
+- api/v1/general/users [//fetch all users]
+- api/v1/general/users/{insert_user_id} /[fetches a user with associatd information]
+- api/v1/general/wallets   [//get all wallets]
+- api/v1/general/wallets/{insert_wallet_id} [//get wallet with associated information]
+- api/v1/general/detail-count [//get user copunt, wallet count, total wallet balance, transaction volume]
+- api/v1/general/send-money  [//transfer money from one wallet to another]
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- Clone repo
+- Run composer intall/update
+- copy .env.example to .env
+- Run Php artisan key:generate
+- Run Php Artisan jwt:secret
+- Run Php Artisan migrate.
 
-### Premium Partners
+## API Documentation
+This application at the time of this writing has some endpoints for authentication, user operations (encompassing wallet operations) and  General endpoints. To view the parameter requirements and expected return values and check out the detailed documentation please visit the postman documenter url below.<br>
+**[Api Documentation Url (https://documenter.getpostman.com/view/7533984/TzskDNrK) ](https://documenter.getpostman.com/view/7533984/TzskDNrK)**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
