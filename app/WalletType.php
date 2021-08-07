@@ -4,10 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class WalletType extends Model
 {
-
-    protected $table = 'posts';
+    protected $table = 'wallet_types';
     protected $primaryKey = 'id';
 
     /**
@@ -16,6 +15,6 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'body',
+        'wallet_type','minimum_balance','monthly_interest_rate'
     ];
 }

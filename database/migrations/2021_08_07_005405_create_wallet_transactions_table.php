@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostsTable extends Migration
+class CreateWalletTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreatePostsTable extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('wallet_transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->longText('body');
+            $table->foreignId('user_id');
+            $table->foreignId('sender_receiver_id');
+            $table->foreignId('wallet_id');
+            $table->string('type');//CREDIT_OR_DEBIT_OR_DEPOSIT
+            $table->decimal('amount');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreatePostsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('wallet_transactions');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostResource extends JsonResource
+class WalletResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,12 +14,14 @@ class PostResource extends JsonResource
      */
     public function toArray($request)
     {
-        static::$wrap = "Posts";
+        static::$wrap = "Wallet";
         
         return [
             'id'=>$this->id,
-            'title'=>$this->title,
-            'body'=>$this->body,
+            'wallet_name'=>$this->wallet_name,
+            'wallet_type'=>$this->type ? $this->type:'Not Found',
+            'owner'=>$this->user ? $this->user:'Not Found',
+            'transaction_history'=>$this->transactions ? $this->transactions:'Not Found'
         ];
     }
 }

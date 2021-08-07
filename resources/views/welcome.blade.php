@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>MOVAM - Index</title>
+  <title>ODIRI - Index</title>
   <meta content="" name="description">
 
   <meta content="" name="keywords">
@@ -44,7 +44,7 @@
 
       <a href="index.html" class="logo d-flex align-items-center">
         <img src="{{asset('assets/img/testlogo.png')}}" alt="">
-        <span style="color:white">MOVAM</span>
+        <span style="color:white">ODIRI UDELE</span>
       </a>
 
       <nav id="navbar" class="navbar">
