@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WalletTransaction extends Model
+class Lga extends Model
 {
-    protected $table = 'wallet_transactions';
+    protected $table = 'lgas';
     protected $primaryKey = 'id';
 
     /**
@@ -15,6 +15,6 @@ class WalletTransaction extends Model
      * @var array
      */
     protected $fillable = [
-        'wallet_id','sender_receiver_wallet_id','amount','narration','user_id','type'
+        'state_id','lga'
     ];
 }

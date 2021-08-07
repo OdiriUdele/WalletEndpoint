@@ -10,6 +10,7 @@ use App\Http\Requests\Api\UpdateWalletRequest;
 use App\Http\Resources\Api\WalletResource;
 use App\WalletTransaction;
 use App\Wallet;
+use Illuminate\Validation\Rule;
 
 class UserWalletController extends BaseApiController
 {
@@ -25,26 +26,6 @@ class UserWalletController extends BaseApiController
 
             return $this->respond($response);
             
-        }catch(\Exception $e){
-            return $this->respondWithError($e->getMessage());
-        }catch(\Error $e){
-            return $this->respondWithError($e->getMessage());
-        }
-    }
-
-    public function viewAllUserWallet(){
-        try{
-            //return all wallets
-            $wallets =  Wallet::where('user_id',auth()->user()->id)->paginate(10);
-
-            $response['response']['status'] = true;
-            $response['response']['responseCode'] = 200;
-            $response['response']['responseDescription'] = "Here all all wallets";
-            
-            $response['wallets'] = $wallets;
-
-            return $this->respond($response);
-
         }catch(\Exception $e){
             return $this->respondWithError($e->getMessage());
         }catch(\Error $e){
@@ -77,10 +58,10 @@ class UserWalletController extends BaseApiController
         try{
             $input = $request->all();
 
-            if($wallet->wallet_type_id != $request->wallet_type_id){
+            if($wallet->wallet_type_id !== $request->wallet_type_id){
                 $this->validate($request, [
                     'wallet_type_id' => [
-                        Rule::unique('wallet')->where(function ($query) {
+                        Rule::unique('wallets')->where(function ($query) {
                                 return $query->where('user_id', $wallet->user_id);
                             })
                     ]

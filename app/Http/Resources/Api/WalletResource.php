@@ -17,7 +17,7 @@ class WalletResource extends JsonResource
         static::$wrap = "Wallet";
         
         return [
-            'id'=>$this->id,
+           'id' =>$this->id,
             'wallet_name'=>$this->wallet_name,
             'wallet_type'=>$this->type ? $this->type:'Not Found',
             'owner'=>$this->user ? $this->user:'Not Found',

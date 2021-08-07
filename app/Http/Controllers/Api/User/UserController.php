@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api\User;
 use App\Http\Controllers\Api\BaseApiController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\Api\UpdateProfileRequest;
 use Illuminate\Support\Facades\Notification;
 use Log;
+use App\User;
+use App\Wallet;
+use App\WalletTransaction;
 
 class UserController extends BaseApiController
 {
@@ -27,7 +30,7 @@ class UserController extends BaseApiController
     public function userInfo(){
         $user = auth()->user();
 
-        $user['wallets'] = Wallets::where('user_id', $user->id)->latest()->get();
+        $user['wallets'] = Wallet::where('user_id', $user->id)->latest()->get();
         $user['transactions'] = WalletTransaction::where('user_id', $user->id)->latest()->get();
 
         $response['response']['status'] = true;
@@ -39,17 +42,26 @@ class UserController extends BaseApiController
     }
 
     public function updateProfile(UpdateProfileRequest $request){
-        $data = request()->except(['email']);
 
-        auth()->user()->update($data);
+        try{
+            $data = request()->except(['email']);
 
-        $user = auth()->user();
+            auth()->user()->update($data);
+
+            $user = auth()->user();
 
 
-        $response['response']['status'] = true;
-        $response['response']['responseCode'] = 200;
-        $response['response']['responseDescription'] = "Profile updated succesffully.";
-        $response['user'] = $user;
+            $response['response']['status'] = true;
+            $response['response']['responseCode'] = 200;
+            $response['response']['responseDescription'] = "Profile updated succesffully.";
+            $response['user'] = $user;
+
+            return $this->respond($response);
+        }catch(\Exception $e){
+            return $this->respondWithError( "Something went wrong.",500);
+        }catch(\Error $e){
+            return $this->respondWithError( "Something went wrong.",500);
+        }
 
     }
 

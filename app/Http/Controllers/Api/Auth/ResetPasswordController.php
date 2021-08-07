@@ -25,9 +25,11 @@ class ResetPasswordController extends BaseApiController
 
     public function verify(){
 
-        if(!$this->userservice->TokenExpired(request()->token)){//CHECK TOKEN IS VALID
+        $check = $this->userservice->TokenExpired(request()->token);
 
-            return $this->respondWithError( "Token expired.",422);
+        if(!$check[0]){//CHECK TOKEN IS VALID
+
+            return $this->respondWithError( $check[1],422);
 
         }
 

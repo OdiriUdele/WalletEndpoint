@@ -6,8 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\BaseApiController;
 use Illuminate\Http\Request;
 use App\Http\Resources\Api\WalletResource;
+use App\Http\Resources\Api\StateResource;
 use App\WalletTransaction;
 use App\Wallet;
+use App\WalletType;
+use App\State;
+
+use App\Imports\StateLgaImport;
+use Exception;
+use Excel;
 
 class GeneralApiController extends BaseApiController
 {
@@ -20,6 +27,25 @@ class GeneralApiController extends BaseApiController
             $response['response']['responseCode'] = 200;
             $response['response']['responseDescription'] = "All Users";
             $response['users'] = $users;
+
+            return $this->respond($response);
+            
+        }catch(\Exception $e){
+            return $this->respondWithError($e->getMessage());
+        }catch(\Error $e){
+            return $this->respondWithError($e->getMessage());
+        }
+    }
+
+    public function getWalletTypes(){//GET ALL WALLET TYPES
+        try{
+            //return all users
+            $types =  WalletType::paginate(10);
+
+            $response['response']['status'] = true;
+            $response['response']['responseCode'] = 200;
+            $response['response']['responseDescription'] = "Wallet Types";
+            $response['wallet_types'] = $types;
 
             return $this->respond($response);
             
@@ -94,7 +120,7 @@ class GeneralApiController extends BaseApiController
     }
 
 
-    public function getDetailsCount(){
+    public function getDetailsCount(){ //Get cdetails count information
         try{
             
             $user_count = User::count();//users count
@@ -127,5 +153,51 @@ class GeneralApiController extends BaseApiController
             return $this->respondWithError($e->getMessage());
         }
     }
+
+
+    public function ImportStateLga(Request $request){
+        $this->validate($request, [
+            'state_lga' => 'required|file|mimes:xls,xlsx'
+        ]);
+
+        try{
+
+             Excel::import(new StateLgaImport,$request->file('state_lga'));
+
+            $response['response']['status'] = true;
+            $response['response']['responseCode'] = 200;
+            $response['response']['responseDescription'] = "Import Successful";
+
+            return $this->respond($response);
+
+        }catch(\Exception $e){
+            return $this->respondWithError($e->getMessage());
+        }catch(\Error $e){
+            return $this->respondWithError($e->getMessage());
+        }
+    }
+
+
+    public function fetchStateLga(){
+
+        try{
+
+            $states = State::all();
+
+            $response['response']['status'] = 'success';
+            $response['response']['responseCode'] = 200;
+            $response['response']['responseDescription'] = "States and LGAs";
+            $response['state']= StateResource::collection($states);
+
+            return $this->respond($response);
+
+        }catch(\Exception $e){
+            return $this->respondWithError($e->getMessage());
+        }catch(\Error $e){
+            return $this->respondWithError($e->getMessage());
+        }
+    }
+        
+    
 
 }

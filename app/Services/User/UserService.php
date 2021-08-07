@@ -11,7 +11,7 @@ use Log;
 
 class UserService extends Service{
     
-    public function storeUser($request){
+    public function storeUser($request){//store new user information
         
         $data = $this->build_user_data();
 
@@ -22,7 +22,7 @@ class UserService extends Service{
 
 
 
-    public function build_user_data($staff = false){
+    public function build_user_data($staff = false){//set user registration details
 
         $data = request()->only(["first_name", "last_name", "password", "email"]);
 
@@ -39,7 +39,7 @@ class UserService extends Service{
 
 
 
-    public function generate_random_token(int $length){
+    public function generate_random_token(int $length){//generate random token helper
         return Str::random($length);
     }
 
@@ -48,47 +48,40 @@ class UserService extends Service{
      * 
      * **/
 
-    public function getToken($email){
+    public function getToken($email){//generate new token for password reset
         $oldToken = PasswordReset::where('email', $email)->first();
         if($oldToken) {
           $now = Carbon::now();
           $oldToken->update(['created_at'=>$now]);
-          \Log::info($oldToken->token);
           return $oldToken->token;
         }
         
         $token = $this->generate_random_token(80);
 
         $this->storeToken($email, $token);
-        \Log::info($token);
         
         return $token;
     }
 
 
-    private function storeToken($email, $token){
+    private function storeToken($email, $token){//store password reset token
         $data = ['email' => $email, 'token' => $token];
         PasswordReset::create($data);
     }
 
-
-    public function verifyUser($token){
-        $token = User::where('email_token',$token)->first();
-        return $token;
-    }
-
-    public function TokenExpired($reqtoken){
+    public function TokenExpired($reqtoken){//check password reset token reset status
 
         $token = PasswordReset::where('token', $reqtoken)->first();
+        
         if(!$token){
-            return false;
+            return [false, 'Token Not Found'];
         }
-        if($token){
-            $duration = 10;
-            $timeinterval = date('Y-m-d H:i:s',strtotime($token->created_at->toDateTimeString()."+".$duration." minutes"));
-            return (strtotime(date('Y-m-d H:i:s')) > strtotime($timeinterval)) ? false : true;
-        }
-       return true;
+        // if($token){
+        //     $duration = 10;
+        //     $timeinterval = date('Y-m-d H:i:s',strtotime($token->created_at->toDateTimeString()."+".$duration." minutes"));
+        //     return (strtotime(date('Y-m-d H:i:s')) > strtotime($timeinterval)) ? [false,'Token Expired' ]: [true,true];
+        // }
+       return [true,true];
     }
 
 

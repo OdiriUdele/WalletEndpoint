@@ -17,31 +17,64 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::prefix('v1')->group(function(){
-    Route::prefix('/post')->namespace('Api')->middleware(['return-json'])->group(function(){
-        Route::get('/', 'PostApiController@viewAllPost');
-        Route::get('/{post}', 'PostApiController@viewSinglePost');
-        Route::post('/create', 'PostApiController@createPost');
-        Route::post('/{post}/update', 'PostApiController@updatePost');
-        Route::delete('/{post}/delete', 'PostApiController@deletePost');
+
+
+
+Route::prefix('v1')->namespace('Api')->middleware(['return-json'])->group(function(){
+
+
+    Route::get('/wallet-types', 'GeneralApiController@getWalletTypes');
+
+    
+    Route::prefix('/state')->group(function(){
+        Route::post('/import', 'GeneralApiController@ImportStateLga'); //import states and lga from excel file.
+        Route::get('/all', 'GeneralApiController@fetchStateLga');// return all states with respective local government.
     });
 
-    Route::namespace('Api\Auth')->middleware(['return-json'])->group(function () {
-        Route::post('/signup','AuthController@register');
-        Route::post('/signin','AuthController@login');
-        Route::post('/logout','AuthController@logout')->middleware(['jwt.verify','jwt.auth']);
-        Route::post('/get-reset-link','ForgotPasswordController@setToken');
-        Route::get('/verify-token/{token}','ResetPasswordController@verify');
-        Route::post('/reset-password','ResetPasswordController@reset');
-        Route::get('/resend-email-verification/{email}','VerifyEmailController@resend');
-        Route::get('/verify-email/{token}','VerifyEmailController@verifyEmail');
-        Route::post('/get-token','VerifyEmailController@getToken');
+    Route::namespace('Auth')->group(function () {
+        Route::post('/signup','AuthController@register');//register new user
+        Route::post('/signin','AuthController@login');//login user
+        Route::post('/logout','AuthController@logout')->middleware(['jwt.verify','jwt.auth']);//logout user
+
+        //PASSWORD RESET OPERATIONS
+        Route::prefix('password')->group(function(){
+           Route::post('/token','ForgotPasswordController@setToken');// (1) get password reset token
+           Route::get('/verify-token/{token}','ResetPasswordController@verify');//(2) verify password reset token
+           Route::post('/reset','ResetPasswordController@reset');//(3) reset password after verification
+        });
     });
 
-    Route::namespace('Api\User')->middleware(['return-json','jwt.verify','jwt.auth'])->group(function () {
-        Route::get('/user', 'UserController@userInfo');
-        Route::get('/users/wallets', 'UserController@wallets');
-        Route::post('/users/update', 'UserController@updateProfile');
+    //USER OPERATIONS
+    Route::namespace('User')->middleware(['return-json','jwt.verify','jwt.auth'])->group(function () {
+
+        Route::prefix('user')->group(function(){
+
+            Route::get('/', 'UserController@userInfo'); //fetch logged in user info
+            Route::post('/update', 'UserController@updateProfile'); //update user info
+
+            Route::prefix('/wallets')->group(function(){
+                Route::get('/', 'UserController@wallets');//fetch logged in user wallets
+                Route::get('/{wallet}', 'UserWalletController@viewSingleUserWallet');//fetch a specific wallet belonging to logged in user.
+                Route::post('/create', 'UserWalletController@createWallet');//create new wallet
+                Route::post('/{wallet}/update', 'UserWalletController@updateWallet');//update wallet
+                Route::delete('/{wallet}/delete', 'UserWalletController@deleteWallet');//delete wallet
+            });
+        });
+
        
     });
+
+
+    // Route::prefix('/post')->namespace('Api')->middleware(['return-json'])->group(function(){
+
+    //     Route::get('/', 'PostApiController@viewAllPost');
+    //     Route::get('/{post}', 'PostApiController@viewSinglePost');
+    //     Route::post('/create', 'PostApiController@createPost');
+    //     Route::post('/{post}/update', 'PostApiController@updatePost');
+    //     Route::delete('/{post}/delete', 'PostApiController@deletePost');
+    // });
+
+   
+
+  
 });

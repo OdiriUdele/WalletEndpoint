@@ -9,11 +9,13 @@ use App\Http\Requests\Api\LoginRequest;
 use App\Services\User\UserService;
 use App\Http\Controllers\Api\BaseApiController;
 use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Wallet;
 use Exception;
 use Error;
 use JWTAuth;
 
-class RegisterController extends BaseApiController
+class AuthController extends BaseApiController
 {
     protected $userservice;
     public function __construct(UserService $userservice){
@@ -32,16 +34,21 @@ class RegisterController extends BaseApiController
 
             $token = JWTAuth::attempt($credentials); //get authentication token
 
-            return response(["message"=>"Account created succesfully.","status" => true, "data" => $user, "token" => $token], 201);
+            $response['response']['status'] = true;
+            $response['response']['responseCode'] = 201;
+            $response['response']['responseDescription'] = "Account created succesfully.";
+            $response['token'] = $token;
+            $response['user'] = $user;
+
+            return $this->respondCreated($response,"User Signup succesfull.");
             
-        }catch(Error $e){
+        }catch(\Error $e){
              return $this->respondWithError( "Something went wrong.");
 
-        } catch(Exception $e){
-
+        } catch(\Exception $e){
             return $this->respondWithError( "Something went wrong.");
             
-        } catch (JWTException $e) {
+        } catch (\JWTException $e) {
 
             return $this->respondWithError( "Could Not create Token.");
         }        
@@ -58,7 +65,7 @@ class RegisterController extends BaseApiController
 
             $user = User::where('email',$request->email)->first(); //fetch user
             
-            // $user['loans'] = LoanApplication::where('user_id', $user->id)->latest()->get();
+            $user['wallets'] = Wallet::where('user_id', $user->id)->latest()->get();//add user wallets
             
             $response['response']['status'] = true;
             $response['response']['responseCode'] = 200;
@@ -68,11 +75,11 @@ class RegisterController extends BaseApiController
 
             return $this->respond($response);
 
-        }catch(Exception $e){
+        }catch(\Exception $e){
 
               return $this->respondWithError( "Something went wrong.");
 
-        }catch (JWTException $e) {
+        }catch (\JWTException $e) {
 
             return $this->respondWithError( "Could not create token.");
 

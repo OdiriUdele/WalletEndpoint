@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class WalletRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class WalletRequest extends FormRequest
     {
         return [
             'wallet_name'=>'required|string',
-            'wallet_type_id' => ['required','integer',Rule::unique('wallet')->where(function ($query) {
+            'wallet_type_id' => ['required','integer',Rule::unique('wallets')->where(function ($query) {
                         return $query->where('user_id', auth()->user()->id);
                     }),
                     Rule::exists('wallet_types','id')
