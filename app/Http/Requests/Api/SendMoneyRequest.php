@@ -24,9 +24,9 @@ class SendMoneyRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => 'bail|required|double',
-            'wallet_id' => 'required|integer|exists:wallets,wallet_id',
-            'receiver_wallet' => 'required|integer|exists:wallets,wallet_id',
+            'amount' => 'bail|required|numeric',
+            'sender_wallet_id' => 'required|integer|exists:wallets,id',
+            'receiver_wallet_id' => 'required|integer|exists:wallets,id',
             'narration' => 'nullable|string'
         ];
     }

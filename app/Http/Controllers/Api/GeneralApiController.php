@@ -11,6 +11,7 @@ use App\WalletTransaction;
 use App\Wallet;
 use App\WalletType;
 use App\State;
+use App\User;
 
 use App\Imports\StateLgaImport;
 use Exception;
@@ -18,6 +19,7 @@ use Excel;
 
 class GeneralApiController extends BaseApiController
 {
+
     public function getAllUsers(){//GET ALL USERS
         try{
             //return all users
@@ -39,7 +41,7 @@ class GeneralApiController extends BaseApiController
 
     public function getWalletTypes(){//GET ALL WALLET TYPES
         try{
-            //return all users
+            //return all wallet types
             $types =  WalletType::paginate(10);
 
             $response['response']['status'] = true;
@@ -125,7 +127,7 @@ class GeneralApiController extends BaseApiController
             
             $user_count = User::count();//users count
             $wallet_count = Wallet::count();// wallets count()
-            $total_wallet_balance = Wallet::sun('balance');//total wallet balance
+            $total_wallet_balance = Wallet::sum('balance');//total wallet balance
 
             $debit_transaction = WalletTransaction::where('type','DEBIT')->sum('amount');
             $credit_transaction = WalletTransaction::where('type','<>','DEBIT')->sum('amount');

@@ -9,10 +9,12 @@ use Log;
 
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use DB;
 
 class Service{
 
     public function check_wallet_balance($wallet_id, $amount){
+
         $wallet = Wallet::where('id',$wallet_id)->first();
 
         $minimum_balance = $wallet->type ? $wallet->type->minimum_balance : 0;//get wallet_type minimum balance
@@ -29,83 +31,93 @@ class Service{
     }
 
     public function creditWallet($wallet_id, $sender_receiver_wallet_id, $amount, $narration){
-        try{
-            $wallet = Wallet::where('id',$wallet_id)->first();
+       
+            try{
 
-            $credit = [
-                'user_id'=> $wallet->user->id,
-                'wallet_id'=> $wallet_id,
-                'sender_reciever_id'=>$sender_receiver_wallet_id,
-                'amount'=>$amount,
-                'type'=>'CREDIT',
-                'narration'=>$narration
-            ];
+                $wallet = Wallet::where('id',$wallet_id)->first();
 
-            $wallet->balance += $amount;
-            $wallet->save();
+                $credit = [
+                    'user_id'=> $wallet->user->id,
+                    'wallet_id'=> $wallet_id,
+                    'sender_receiver_wallet_id'=>$sender_receiver_wallet_id,
+                    'amount'=>$amount,
+                    'type'=>'CREDIT',
+                    'narration'=>$narration
+                ];
 
-            $transaction = WalletTransaction::create($credit);
+                $wallet->balance += $amount;
+                $wallet->save();
 
-            return $transaction;
+                $transaction = WalletTransaction::insert($credit);
 
-        }catch(\Exception $e){
-            return false;
-        }catch(\Error $e){
-            return false;
-        }
+                return $transaction;
+
+            }catch(\Exception $e){
+                \Log::info($e);
+                return false;
+            }catch(\Error $e){
+                \Log::info($e);
+                return false;
+            }
     }
 
     public function debitWallet($wallet_id, $sender_receiver_wallet_id, $amount, $narration){
-        try{
-            $wallet = Wallet::where('id',$wallet_id)->first();
+        
+            try{
+                $wallet = Wallet::where('id',$wallet_id)->first();
 
-            $credit = [
-                'user_id'=> $wallet->user->id,
-                'wallet_id'=> $wallet_id,
-                'sender_reciever_id'=>$sender_receiver_wallet_id,
-                'amount'=>$amount,
-                'type'=>'DEBIT',
-                'narration'=>$narration
-            ];
+                $credit = [
+                    'user_id'=> $wallet->user->id,
+                    'wallet_id'=> $wallet_id,
+                    'sender_receiver_wallet_id'=>$sender_receiver_wallet_id,
+                    'amount'=>$amount,
+                    'type'=>'DEBIT',
+                    'narration'=>$narration
+                ];
 
-            $wallet->balance -= $amount;
-            $wallet->save();
+                $wallet->balance -= $amount;
+                $wallet->save();
 
-            $transaction = WalletTransaction::create($credit);
+                $transaction = WalletTransaction::insert($credit);
 
-            return $transaction;
+                return $transaction;
 
-        }catch(\Exception $e){
-            return false;
-        }catch(\Error $e){
-            return false;
-        }
+            }catch(\Exception $e){
+                \Log::info($e);
+                return false;
+            }catch(\Error $e){
+                return false;
+            }
+        
     }
 
     public function depositWallet($wallet_id, $amount, $narration){
-        try{
-            $wallet = Wallet::where('id',$wallet_id)->first();
 
-            $credit = [
-                'user_id'=> $wallet->user->id,
-                'wallet_id'=> $wallet_id,
-                'sender_reciever_id'=>$wallet_id,
-                'amount'=>$amount,
-                'type'=>'DEPOSIT',
-                'narration'=>$narration
-            ];
+           try{
+                $wallet = Wallet::where('id',$wallet_id)->first();
 
-            $wallet->balance += $amount;
-            $wallet->save();
+                $credit = [
+                    'user_id'=> $wallet->user->id,
+                    'wallet_id'=> $wallet_id,
+                    'sender_receiver_id'=>$wallet_id,
+                    'amount'=>$amount,
+                    'type'=>'DEPOSIT',
+                    'narration'=>$narration
+                ];
 
-            $transaction = WalletTransaction::create($credit);
+                $wallet->balance += $amount;
+                $wallet->save();
 
-            return $transaction;
+                $transaction = WalletTransaction::insert($credit);
 
-        }catch(\Exception $e){
-            return false;
-        }catch(\Error $e){
-            return false;
-        }
+                return $transaction;
+
+            }catch(\Exception $e){
+                return false;
+            }catch(\Error $e){
+                return false;
+            }
+
+        
     }
 }

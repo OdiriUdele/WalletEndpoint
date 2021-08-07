@@ -22,15 +22,28 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->namespace('Api')->middleware(['return-json'])->group(function(){
 
+    //GENERAL OPERATIONS
+    Route::prefix('/general')->group(function(){
+        Route::get('/wallet-types', 'GeneralApiController@getWalletTypes');//fetch wallet types
+        Route::get('/users', 'GeneralApiController@getAllUsers');//fetch all users
+        Route::get('/users/{user}', 'GeneralApiController@getUserDetail');//fetches a user with associatd information
+        Route::get('/wallets', 'GeneralApiController@getAllWallets');//get all wallets
+        Route::get('/wallets/{wallet}', 'GeneralApiController@getWalletDetail');//get wallet with associated information
+        Route::get('/detail-count', 'GeneralApiController@getDetailsCount');//get user copunt, wallet count, total wallet balance, transaction volume
 
-    Route::get('/wallet-types', 'GeneralApiController@getWalletTypes');
+        //SEND MONEY
+        Route::post('/send-money', 'WalletController@creditWallet');
+    });
 
     
+    
+    //STATE OPERATIONS
     Route::prefix('/state')->group(function(){
         Route::post('/import', 'GeneralApiController@ImportStateLga'); //import states and lga from excel file.
         Route::get('/all', 'GeneralApiController@fetchStateLga');// return all states with respective local government.
     });
 
+    //AUTHENTICATION OPERATIONS
     Route::namespace('Auth')->group(function () {
         Route::post('/signup','AuthController@register');//register new user
         Route::post('/signin','AuthController@login');//login user
@@ -65,14 +78,14 @@ Route::prefix('v1')->namespace('Api')->middleware(['return-json'])->group(functi
     });
 
 
-    // Route::prefix('/post')->namespace('Api')->middleware(['return-json'])->group(function(){
+    Route::prefix('/post')->namespace('Api')->middleware(['return-json'])->group(function(){
 
-    //     Route::get('/', 'PostApiController@viewAllPost');
-    //     Route::get('/{post}', 'PostApiController@viewSinglePost');
-    //     Route::post('/create', 'PostApiController@createPost');
-    //     Route::post('/{post}/update', 'PostApiController@updatePost');
-    //     Route::delete('/{post}/delete', 'PostApiController@deletePost');
-    // });
+        Route::get('/', 'PostApiController@viewAllPost');
+        Route::get('/{post}', 'PostApiController@viewSinglePost');
+        Route::post('/create', 'PostApiController@createPost');
+        Route::post('/{post}/update', 'PostApiController@updatePost');
+        Route::delete('/{post}/delete', 'PostApiController@deletePost');
+    });
 
    
 
