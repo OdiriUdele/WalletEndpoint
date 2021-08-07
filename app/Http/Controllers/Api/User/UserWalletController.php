@@ -11,7 +11,7 @@ use App\Http\Resources\Api\WalletResource;
 use App\WalletTransaction;
 use App\Wallet;
 
-class PostApiController extends BaseApiController
+class UserWalletController extends BaseApiController
 {
     public function viewSingleUserWallet(Wallet $wallet){
         try{
@@ -21,7 +21,7 @@ class PostApiController extends BaseApiController
             $response['response']['status'] = true;
             $response['response']['responseCode'] = 200;
             $response['response']['responseDescription'] = "Here is your wallet";
-            $response['post'] = $post;
+            $response['wallet'] = $wallet;
 
             return $this->respond($response);
             
@@ -62,7 +62,7 @@ class PostApiController extends BaseApiController
             $response['response']['status'] = true;
             $response['response']['responseCode'] = 201;
             $response['response']['responseDescription'] = "New Wallet Created";
-            $response['created_post'] = $wallet;
+            $response['data'] = $wallet;
 
             return $this->respondCreated($response, "Wallet Created Successfully");
 
@@ -95,7 +95,7 @@ class PostApiController extends BaseApiController
             $response['response']['status'] = true;
             $response['response']['responseCode'] = 200;
             $response['response']['responseDescription'] = "Wallet Updated Successfully";
-            $response['created_post'] = $wallet;
+            $response['updated_wallet'] = $wallet;
 
             return $this->respond($response);
 
@@ -108,7 +108,7 @@ class PostApiController extends BaseApiController
 
     public function deleteWallet(Wallet $wallet){
         try{
-            if($post->delete()){
+            if($wallet->delete()){
 
                 $response['response']['status'] = true;
                 $response['response']['responseCode'] = 200;

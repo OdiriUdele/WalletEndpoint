@@ -16,9 +16,10 @@ class CreateWalletTransactionsTable extends Migration
         Schema::create('wallet_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('sender_receiver_id');
+            $table->foreignId('sender_receiver_wallet_id')->nullable();
             $table->foreignId('wallet_id');
             $table->string('type');//CREDIT_OR_DEBIT_OR_DEPOSIT
+            $table->text('narration');
             $table->decimal('amount');
             $table->timestamps();
         });
