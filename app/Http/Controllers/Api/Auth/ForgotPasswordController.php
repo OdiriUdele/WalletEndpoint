@@ -24,7 +24,7 @@ class ForgotPasswordController extends BaseApiController
         
         if(!$this->userservice->check_email($request->email)){//confirm if user exists
 
-            return $this->respondWithError( "We can't find a user with the supplied email id.",422,422);
+            return $this->respondWithError( "We can't find a user with the supplied email id.",422);
         }
         try{
             
