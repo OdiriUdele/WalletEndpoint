@@ -75,19 +75,7 @@ Route::prefix('v1')->namespace('Api')->middleware(['return-json'])->group(functi
         });
 
        
-    });
-
-
-    Route::prefix('/post')->namespace('Api')->middleware(['return-json'])->group(function(){
-
-        Route::get('/', 'PostApiController@viewAllPost');
-        Route::get('/{post}', 'PostApiController@viewSinglePost');
-        Route::post('/create', 'PostApiController@createPost');
-        Route::post('/{post}/update', 'PostApiController@updatePost');
-        Route::delete('/{post}/delete', 'PostApiController@deletePost');
-    });
-
-   
+    });   
 
   
 });
